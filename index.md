@@ -1,9 +1,375 @@
-# Nakul Khandelwal
-
-I’m a data scientist interested in machine learning, optimization, computer science, physics, and philosophy.
-
-This website is a public notebook where I explore ideas from first principles — breaking down complex concepts, thinking through hard problems, and documenting things I’m learning or building.
-
-Topics here may include machine learning and optimization, complexity theory, algorithms, puzzles, systems thinking, and occasionally physics or philosophy.
-
----
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Nakul Khandelwal</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;0,900;1,400;1,700&family=IBM+Plex+Mono:wght@300;400;500&family=Libre+Baskerville:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --ink: #0e0e0e;
+    --paper: #f4f0e8;
+    --accent: #c8392b;
+    --mid: #6b6560;
+    --rule: #c8bfb0;
+  }
+ 
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  html { font-size: 18px; }
+ 
+  body {
+    background: var(--paper);
+    color: var(--ink);
+    font-family: 'Libre Baskerville', Georgia, serif;
+    line-height: 1.75;
+    min-height: 100vh;
+  }
+ 
+  body::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.04'/%3E%3C/svg%3E");
+    pointer-events: none;
+    z-index: 100;
+    opacity: 0.4;
+  }
+ 
+  .main-container {
+    max-width: 780px;
+    margin: 0 auto;
+    padding: 0 2rem;
+  }
+ 
+  /* ── HERO ── */
+  .hero {
+    padding: 4rem 0 2rem;
+    border-bottom: 1px solid var(--rule);
+    margin-bottom: 3rem;
+  }
+ 
+  h1 {
+    font-family: 'Playfair Display', serif;
+    font-size: clamp(2.8rem, 6vw, 4.5rem);
+    font-weight: 900;
+    line-height: 1.05;
+    letter-spacing: -0.02em;
+    margin-bottom: 1.5rem;
+    color: var(--ink);
+  }
+ 
+  h1 em {
+    font-style: italic;
+    color: var(--accent);
+  }
+ 
+  .deck {
+    font-family: 'Libre Baskerville', serif;
+    font-size: 1.15rem;
+    line-height: 1.65;
+    color: #3a3530;
+    font-style: italic;
+    max-width: 620px;
+    border-left: 3px solid var(--accent);
+    padding-left: 1.25rem;
+    margin-bottom: 2rem;
+  }
+ 
+  /* ── BIO SECTION ── */
+  .intro-section {
+    border-left: 3px solid var(--accent);
+    padding-left: 1.75rem;
+    margin-bottom: 3rem;
+    padding-bottom: 2rem;
+    border-bottom: 1px solid var(--rule);
+  }
+ 
+  h2 {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.5rem;
+    font-weight: 700;
+    margin: 2rem 0 1rem;
+    color: var(--ink);
+    line-height: 1.25;
+  }
+ 
+  h2::before {
+    content: '§';
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 0.7rem;
+    color: var(--accent);
+    display: block;
+    margin-bottom: 0.4rem;
+    letter-spacing: 0.1em;
+  }
+ 
+  h2.intro-head::before { content: '◆'; }
+ 
+  p {
+    margin-bottom: 1.4rem;
+    font-size: 1rem;
+    color: #1a1714;
+  }
+ 
+  .intro-section > p:first-of-type::first-letter {
+    font-family: 'Playfair Display', serif;
+    font-size: 4rem;
+    font-weight: 900;
+    float: left;
+    line-height: 0.8;
+    margin: 0.1em 0.1em 0 0;
+    color: var(--accent);
+  }
+ 
+  /* ── WRITING INDEX ── */
+  .writing-section {
+    margin-bottom: 3rem;
+  }
+ 
+  .writing-section h2 { margin-top: 0; }
+ 
+  .article-list {
+    list-style: none;
+    margin-top: 1.5rem;
+  }
+ 
+  .article-list li {
+    border-top: 1px solid var(--rule);
+    padding: 1.5rem 0;
+  }
+ 
+  .article-list li:last-child {
+    border-bottom: 1px solid var(--rule);
+  }
+ 
+  .article-link {
+    display: block;
+    text-decoration: none;
+    color: inherit;
+  }
+ 
+  .article-link:hover .article-title {
+    color: var(--accent);
+  }
+ 
+  .article-link:hover .article-arrow {
+    transform: translateX(4px);
+    color: var(--accent);
+  }
+ 
+  .article-meta {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 0.65rem;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--mid);
+    margin-bottom: 0.4rem;
+  }
+ 
+  .article-title {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.3rem;
+    font-weight: 700;
+    line-height: 1.25;
+    color: var(--ink);
+    margin-bottom: 0.5rem;
+    transition: color 0.2s ease;
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 1rem;
+  }
+ 
+  .article-arrow {
+    font-size: 1rem;
+    color: var(--mid);
+    flex-shrink: 0;
+    margin-top: 0.1em;
+    transition: transform 0.2s ease, color 0.2s ease;
+  }
+ 
+  .article-desc {
+    font-size: 0.9rem;
+    color: var(--mid);
+    font-style: italic;
+    line-height: 1.55;
+    margin: 0;
+  }
+ 
+  /* ── TOPICS RULE BAR ── */
+  .topics-section {
+    border-top: 3px double var(--rule);
+    border-bottom: 1px solid var(--rule);
+    padding: 1.5rem 0;
+    margin: 3rem 0;
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 1.5rem;
+  }
+ 
+  .topic-item {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 0.68rem;
+    color: var(--mid);
+    line-height: 1.6;
+  }
+ 
+  .topic-item strong {
+    display: block;
+    color: var(--ink);
+    font-size: 0.75rem;
+    margin-bottom: 0.3rem;
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+  }
+ 
+  /* ── FOOTER ── */
+  footer {
+    margin-top: 4rem;
+    padding: 2rem 0 4rem;
+    border-top: 1px solid var(--rule);
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 0.65rem;
+    letter-spacing: 0.1em;
+    color: var(--mid);
+    line-height: 2;
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    flex-wrap: wrap;
+    gap: 1rem;
+  }
+ 
+  footer strong {
+    display: block;
+    color: var(--ink);
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    margin-bottom: 0.5rem;
+  }
+ 
+  .footer-links {
+    display: flex;
+    gap: 1.5rem;
+    flex-wrap: wrap;
+  }
+ 
+  .footer-links a {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 0.65rem;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--mid);
+    text-decoration: none;
+    border-bottom: 1px solid transparent;
+    transition: color 0.2s, border-color 0.2s;
+  }
+ 
+  .footer-links a:hover {
+    color: var(--accent);
+    border-bottom-color: var(--accent);
+  }
+ 
+  /* ── ANIMATIONS ── */
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(16px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+ 
+  .hero { animation: fadeUp 0.7s ease both; }
+  .intro-section { animation: fadeUp 0.7s ease 0.1s both; }
+  .writing-section { animation: fadeUp 0.7s ease 0.2s both; }
+  .topics-section { animation: fadeUp 0.7s ease 0.3s both; }
+ 
+  @media (max-width: 600px) {
+    .topics-section { grid-template-columns: 1fr 1fr; }
+    h1 { font-size: 2.4rem; }
+    .intro-section { padding-left: 1rem; }
+    footer { flex-direction: column; }
+  }
+</style>
+</head>
+<body>
+ 
+<div class="main-container">
+ 
+  <header class="hero">
+    <h1>Nakul <em>Khandelwal</em></h1>
+    <p class="deck">A public notebook on machine learning, complexity, and the first principles beneath hard problems.</p>
+  </header>
+ 
+  <div class="intro-section">
+    <h2 class="intro-head">About</h2>
+    <p>I'm a data scientist interested in machine learning, optimization, computer science, physics, and philosophy. This website is where I think in public — breaking down complex concepts from first principles, working through hard problems, and documenting things I'm learning or building.</p>
+    <p>Topics here span machine learning and optimization, complexity theory, algorithms, puzzles, systems thinking, and occasionally physics or philosophy.</p>
+  </div>
+ 
+  <!-- ═══════════════════════════════════════════
+       WRITING — add your articles here
+  ════════════════════════════════════════════ -->
+  <div class="writing-section">
+    <h2>Writing</h2>
+ 
+    <ul class="article-list">
+ 
+      <li>
+        <a class="article-link" href="the-hollow-market.html">
+          <div class="article-meta">Economics · AI</div>
+          <div class="article-title">
+            The Hollow Market
+            <span class="article-arrow">→</span>
+          </div>
+          <p class="article-desc">AI will not destroy the economy through malice. It will do something quieter — remove the tension that makes the economy worth having.</p>
+        </a>
+      </li>
+ 
+      <!-- Add more articles below by copying the <li> block above -->
+      <!--
+      <li>
+        <a class="article-link" href="your-page.html">
+          <div class="article-meta">Category · Tag</div>
+          <div class="article-title">
+            Your Article Title
+            <span class="article-arrow">→</span>
+          </div>
+          <p class="article-desc">A one-sentence description of what this piece is about.</p>
+        </a>
+      </li>
+      -->
+ 
+    </ul>
+  </div>
+ 
+  <!-- ═══════════════════════════════════════════
+       TOPICS RULE BAR
+  ════════════════════════════════════════════ -->
+  <div class="topics-section">
+    <div class="topic-item">
+      <strong>ML & Optimization</strong>
+      Learning systems, gradient methods, probabilistic inference
+    </div>
+    <div class="topic-item">
+      <strong>Complexity & Algorithms</strong>
+      Computational theory, puzzles, emergent behaviour
+    </div>
+    <div class="topic-item">
+      <strong>Philosophy & Systems</strong>
+      First principles, second-order thinking, epistemology
+    </div>
+  </div>
+ 
+  <footer>
+    <div>
+      <strong>Nakul Khandelwal</strong>
+      nkhandelwal.github.io
+    </div>
+    <div class="footer-links">
+      <a href="https://github.com/yourusername">GitHub</a>
+      <a href="https://twitter.com/yourusername">Twitter</a>
+      <a href="mailto:you@example.com">Email</a>
+    </div>
+  </footer>
+ 
+</div>
+</body>
+</html>
