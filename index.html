@@ -223,38 +223,15 @@
     text-transform: uppercase;
   }
  
-  /* ── FOOTER ── */
-  footer {
-    margin-top: 4rem;
-    padding: 2rem 0 4rem;
-    border-top: 1px solid var(--rule);
-    font-family: 'IBM Plex Mono', monospace;
-    font-size: 0.65rem;
-    letter-spacing: 0.1em;
-    color: var(--mid);
-    line-height: 2;
-    display: flex;
-    justify-content: space-between;
-    align-items: flex-start;
-    flex-wrap: wrap;
-    gap: 1rem;
-  }
- 
-  footer strong {
-    display: block;
-    color: var(--ink);
-    letter-spacing: 0.18em;
-    text-transform: uppercase;
-    margin-bottom: 0.5rem;
-  }
- 
-  .footer-links {
+  /* ── HERO LINKS ── */
+  .hero-links {
     display: flex;
     gap: 1.5rem;
     flex-wrap: wrap;
+    margin-top: 0.5rem;
   }
- 
-  .footer-links a {
+
+  .hero-links a {
     font-family: 'IBM Plex Mono', monospace;
     font-size: 0.65rem;
     letter-spacing: 0.1em;
@@ -264,12 +241,12 @@
     border-bottom: 1px solid transparent;
     transition: color 0.2s, border-color 0.2s;
   }
- 
-  .footer-links a:hover {
+
+  .hero-links a:hover {
     color: var(--accent);
     border-bottom-color: var(--accent);
   }
- 
+
   /* ── ANIMATIONS ── */
   @keyframes fadeUp {
     from { opacity: 0; transform: translateY(16px); }
@@ -285,7 +262,6 @@
     .topics-section { grid-template-columns: 1fr 1fr; }
     h1 { font-size: 2.4rem; }
     .intro-section { padding-left: 1rem; }
-    footer { flex-direction: column; }
   }
 </style>
 </head>
@@ -296,6 +272,13 @@
   <header class="hero">
     <h1>Nakul <em>Khandelwal</em></h1>
     <p class="deck">A public notebook on machine learning, complexity, and the first principles beneath hard problems.</p>
+    <div class="hero-links">
+      <a href="https://github.com/KNakul242">GitHub</a>
+      <a href="https://www.linkedin.com/in/nakul-khandelwal-1b87a5245">LinkedIn</a>
+      <a href="https://x.com/Nakul_02">Twitter</a>
+      <a href="mailto:nakulkh020402@gmail.com">Email</a>
+      <a href="resume.pdf">Resume</a>
+    </div>
   </header>
  
   <div class="intro-section">
@@ -379,18 +362,7 @@
       First principles, second-order thinking, epistemology
     </div>
   </div>
- 
-  <footer>
-    <div>
-      <strong>Nakul Khandelwal</strong>
-    </div>
-    <div class="footer-links">
-      <a href="https://github.com/KNakul242">GitHub</a>
-      <a href="https://x.com/Nakul_02">Twitter</a>
-      <a href="mailto:nakulkh020402@gmail.com">Email</a>
-    </div>
-  </footer>
- 
+
 </div>
 </body>
 </html>
