@@ -44,7 +44,6 @@
   /* ── HERO ── */
   .hero {
     padding: 4rem 0 2rem;
-    border-bottom: 1px solid var(--rule);
     margin-bottom: 3rem;
   }
  
@@ -226,9 +225,12 @@
   /* ── HERO LINKS ── */
   .hero-links {
     display: flex;
-    gap: 1.5rem;
     flex-wrap: wrap;
-    margin-top: 0.5rem;
+    justify-content: space-evenly;
+    row-gap: 0.6rem;
+    margin-top: 0.75rem;
+    padding-bottom: 1rem;
+    border-bottom: 1px solid var(--rule);
   }
 
   .hero-links a {
