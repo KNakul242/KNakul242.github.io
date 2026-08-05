@@ -3,6 +3,7 @@
 import glob
 import json
 import os
+import struct
 import sys
 import xml.etree.ElementTree as ET
 from html.parser import HTMLParser
@@ -149,12 +150,30 @@ def check_page(path):
 
     og_image = get_meta(collector, "og:image", "property")
     if og_image:
-        image_filename = og_image.rsplit("/", 1)[-1]
-        image_path = os.path.join(REPO_ROOT, image_filename)
-        if not os.path.isfile(image_path):
-            failures.append(
-                f"og:image '{og_image}' does not exist on disk at {image_path}"
-            )
+        if not og_image.startswith(DOMAIN + "/"):
+            failures.append(f"og:image '{og_image}' is not an absolute URL under {DOMAIN}")
+        else:
+            rel_path = og_image[len(DOMAIN) + 1:]
+            image_path = os.path.join(REPO_ROOT, *rel_path.split("/"))
+            if os.path.isfile(image_path):
+                width_declared = get_meta(collector, "og:image:width", "property")
+                height_declared = get_meta(collector, "og:image:height", "property")
+                with open(image_path, "rb") as fh:
+                    header = fh.read(24)
+                if header[:8] == b"\x89PNG\r\n\x1a\n":
+                    real_width, real_height = struct.unpack(">II", header[16:24])
+                    if width_declared != str(real_width):
+                        failures.append(
+                            f"og:image:width is '{width_declared}', actual image is {real_width}px wide"
+                        )
+                    if height_declared != str(real_height):
+                        failures.append(
+                            f"og:image:height is '{height_declared}', actual image is {real_height}px tall"
+                        )
+            else:
+                failures.append(
+                    f"og:image '{og_image}' does not exist on disk at {image_path}"
+                )
 
     return failures
 
@@ -180,9 +199,9 @@ def check_sitemap_xml(html_files):
         return [f"sitemap.xml is not well-formed XML: {e}"]
 
     ns = {"sm": "http://www.sitemaps.org/schemas/sitemap/0.9"}
-    urls = {loc.text.strip() for loc in tree.getroot().findall(".//sm:loc", ns)}
+    urls = {(loc.text or "").strip() for loc in tree.getroot().findall(".//sm:loc", ns)}
     if not urls:
-        urls = {loc.text.strip() for loc in tree.getroot().findall(".//loc")}
+        urls = {(loc.text or "").strip() for loc in tree.getroot().findall(".//loc")}
 
     failures = []
     for html_file in html_files:
