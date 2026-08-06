@@ -212,8 +212,19 @@ def check_sitemap_xml(html_files):
     return failures
 
 
+def is_content_page(path):
+    """Real site pages start with a proper <html> document; one-off files
+    like Google's site-verification marker are plain text with an .html
+    extension and should not be validated as pages."""
+    with open(path, encoding="utf-8") as f:
+        head = f.read(200)
+    return "<html" in head.lower()
+
+
 def main():
-    html_files = sorted(glob.glob(os.path.join(REPO_ROOT, "*.html")))
+    html_files = sorted(
+        p for p in glob.glob(os.path.join(REPO_ROOT, "*.html")) if is_content_page(p)
+    )
     all_failures = {}
 
     for path in html_files:
