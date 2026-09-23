@@ -278,6 +278,7 @@
   }
 
   .data-table tbody tr:last-child td { border-bottom: 1px solid var(--ink); }
+  .data-table.decision td { white-space: normal; vertical-align: top; }
 
   .figure-block { margin: 2.5rem 0; }
   .figure-block img { display: block; width: 100%; max-width: 100%; border: 1px solid var(--rule); }
@@ -362,7 +363,7 @@
 
   <header class="hero">
     <h1>The <em>Apparatus</em> Problem</h1>
-    <p class="deck">A benchmark number is not measured, it is manufactured, by a preprocessing function, a confidence threshold, a thermal state, a vendor's compute-unit flag, and any one of those can make a reading mean something other than it appears to, without ever crashing. This is a study of an object detector across three runtimes and three hardware targets. It is also a study of four readings that needed a second look before they could be trusted.</p>
+    <p class="deck">A benchmark number is not measured. It is manufactured, by a preprocessing function, a confidence threshold, a thermal state, a vendor's compute-unit flag, and any one of those can make a reading mean something other than it appears to, without ever crashing. This is a study of an object detector across three runtimes and three hardware targets. It is also a study of four readings that needed a second look before they could be trusted.</p>
   </header>
 
   <div class="article-body">
@@ -382,26 +383,28 @@
 
       <div class="table-wrap">
         <table class="data-table">
-          <caption>Latency and accuracy — all eight runtime × hardware × precision combinations</caption>
+          <caption>Latency and accuracy across all eight runtime, hardware and precision combinations</caption>
           <thead>
             <tr>
               <th>Runtime</th><th>Hardware</th><th>Precision</th>
-              <th class="num">Mean</th><th class="num">p95</th><th class="num">FPS</th>
+              <th class="num">Mean</th><th class="num">SD</th><th class="num">p95</th><th class="num">FPS @ p95</th>
               <th class="num">mAP@.5:.95</th><th class="num">Δ vs FP32</th>
             </tr>
           </thead>
           <tbody>
-            <tr><td>PyTorch CPU</td><td>Fedora CPU</td><td>FP32</td><td class="num">77.5 ms</td><td class="num">95.4 ms</td><td class="num">10.5</td><td class="num">0.3595</td><td class="num">baseline</td></tr>
-            <tr><td>ONNX Runtime CPU EP</td><td>Fedora CPU</td><td>FP32</td><td class="num">72.1 ms</td><td class="num">81.4 ms</td><td class="num">12.3</td><td class="num">0.3595</td><td class="num">baseline</td></tr>
-            <tr><td>TensorRT</td><td>Colab T4</td><td>FP32</td><td class="num">5.88 ms</td><td class="num">7.93 ms</td><td class="num">126</td><td class="num">0.3576</td><td class="num">baseline</td></tr>
-            <tr><td>TensorRT</td><td>Colab T4</td><td>FP16</td><td class="num">3.44 ms</td><td class="num">3.72 ms</td><td class="num">269</td><td class="num">0.3571</td><td class="num">−0.0004</td></tr>
-            <tr><td>TensorRT</td><td>Colab T4</td><td>INT8</td><td class="num">3.22 ms</td><td class="num">3.55 ms</td><td class="num">281</td><td class="num">0.2919</td><td class="num">−0.0657</td></tr>
-            <tr><td>PyTorch MPS</td><td>Mac M5</td><td>FP32</td><td class="num">8.79 ms</td><td class="num">11.21 ms</td><td class="num">89</td><td class="num">0.3576</td><td class="num">baseline</td></tr>
-            <tr><td>PyTorch MPS</td><td>Mac M5</td><td>FP16</td><td class="num">9.56 ms</td><td class="num">10.75 ms</td><td class="num">93</td><td class="num">0.3577</td><td class="num">+0.0001</td></tr>
-            <tr><td>ONNX Runtime + CoreML EP</td><td>Mac M5</td><td>FP32</td><td class="num">9.34 ms</td><td class="num">9.93 ms</td><td class="num">101</td><td class="num">0.3576</td><td class="num">baseline</td></tr>
+            <tr><td>PyTorch CPU †</td><td>Fedora CPU</td><td>FP32</td><td class="num">77.5 ms</td><td class="num">9.39 ms</td><td class="num">95.4 ms</td><td class="num">10.5</td><td class="num">0.3595</td><td class="num">baseline</td></tr>
+            <tr><td>ONNX Runtime CPU EP †</td><td>Fedora CPU</td><td>FP32</td><td class="num">72.1 ms</td><td class="num">9.91 ms</td><td class="num">81.4 ms</td><td class="num">12.3</td><td class="num">0.3595</td><td class="num">baseline</td></tr>
+            <tr><td>TensorRT</td><td>Colab T4</td><td>FP32</td><td class="num">5.88 ms</td><td class="num">1.27 ms</td><td class="num">7.93 ms</td><td class="num">126</td><td class="num">0.3576</td><td class="num">baseline</td></tr>
+            <tr><td>TensorRT</td><td>Colab T4</td><td>FP16</td><td class="num">3.44 ms</td><td class="num">0.10 ms</td><td class="num">3.72 ms</td><td class="num">269</td><td class="num">0.3571</td><td class="num">−0.0004</td></tr>
+            <tr><td>TensorRT</td><td>Colab T4</td><td>INT8</td><td class="num">3.22 ms</td><td class="num">0.15 ms</td><td class="num">3.55 ms</td><td class="num">281</td><td class="num">0.2919</td><td class="num">−0.0657</td></tr>
+            <tr><td>PyTorch MPS</td><td>Mac M5</td><td>FP32</td><td class="num">8.79 ms</td><td class="num">1.30 ms</td><td class="num">11.21 ms</td><td class="num">89</td><td class="num">0.3576</td><td class="num">baseline</td></tr>
+            <tr><td>PyTorch MPS</td><td>Mac M5</td><td>FP16</td><td class="num">9.56 ms</td><td class="num">0.83 ms</td><td class="num">10.75 ms</td><td class="num">93</td><td class="num">0.3577</td><td class="num">+0.0001</td></tr>
+            <tr><td>ONNX Runtime + CoreML EP</td><td>Mac M5</td><td>FP32</td><td class="num">9.34 ms</td><td class="num">0.35 ms</td><td class="num">9.93 ms</td><td class="num">101</td><td class="num">0.3576</td><td class="num">baseline</td></tr>
           </tbody>
         </table>
       </div>
+
+      <p class="figure-caption">SD is the standard deviation across the 100 timed runs. FPS is 1000 divided by p95 latency, the rate you can count on rather than the average. † Fedora rows come from a single, thermally throttled session and predate the preprocessing fix described next. Across three sessions on that machine, mean latency ranged from 51 to 88 ms for PyTorch and 43 to 72 ms for ONNX Runtime.</p>
 
       <p>One more piece of apparatus needed fixing before any of this was trustworthy, and it's worth stating plainly since six of the eight rows above depend on it. The preprocessing step that resizes every image before inference had no upper clamp on its scale factor, which means it would enlarge a small image to fit the model's input size, something the reference validator this study is measured against explicitly refuses to do. Roughly one in five COCO val2017 images is smaller than 640 pixels in both dimensions, so this wasn't an edge case. Clamping the scale factor moved FP32 and FP16 mAP by about two-thousandths of a point on both the Mac and the T4, independently, which itself is a form of corroboration: two different runtimes, two different machines, the same fix, the same-sized shift. INT8 moved roughly thirteen times further, plausibly because its calibration set runs through the same preprocessing function, so fixing the measuring instrument also changed the thing being measured (a plausible mechanism, not a confirmed one). The Fedora rows above predate this fix. That hardware is gone, so they can't be re-measured, and aren't directly comparable to the rest of the table for that reason.</p>
 
@@ -421,14 +424,33 @@
         </table>
       </div>
 
-      <p>The first honest reading of that table has nothing to do with precision. Fastest and slowest sit roughly twenty-seven times apart at the tail: a Fedora CPU core at 95 ms p95, the fastest Colab T4 result at 3.55 ms p95, and neither CPU runtime clears real time at any thermal state this study measured. At this resolution, hardware acceleration is the entry ticket, not a tuning knob. Every row that isn't a CPU exists because the hardware changed, not because the software got cleverer.</p>
+      <p class="figure-caption">A dash means the combination wasn't measured. ONNX Runtime at FP16 and INT8 needs a static-quantization step that wasn't implemented in this study; the CPU runtimes were measured at FP32 only, and PyTorch MPS at FP32 and FP16.</p>
 
-      <p>Every number in that table is real. Getting there took four separate readings elsewhere in this study, in the accuracy pipeline, the thermal logs, the live demo, and a power profiler — none of them shown above, each needing a second look before it could be trusted.</p>
+      <p>The first honest reading of that table has nothing to do with precision. Fastest and slowest sit roughly twenty-seven times apart at the tail: a Fedora CPU core at 95 ms p95, the fastest Colab T4 result at 3.55 ms p95, and neither CPU runtime reaches 30 FPS, the real-time bar used throughout this study, at any thermal state it measured. Even the coolest sessions averaged about 20 FPS for PyTorch and 23 for ONNX Runtime. At this resolution, hardware acceleration is the entry ticket, not a tuning knob. Every row that isn't a CPU exists because the hardware changed, not because the software got cleverer.</p>
+
+      <p>Read as deployment choices, the tables settle into four verdicts. The sections that follow are the evidence for each.</p>
+
+        <div class="table-wrap">
+          <table class="data-table decision">
+            <caption>Deployment verdicts, scoped to the hardware measured</caption>
+            <thead>
+              <tr><th>Deploying on</th><th>Choose</th><th>Why</th></tr>
+            </thead>
+            <tbody>
+              <tr><td>T4 via TensorRT</td><td>FP16</td><td>41 percent faster than FP32 at mean, with no measurable accuracy cost</td></tr>
+              <tr><td>Apple M5</td><td>PyTorch MPS, FP32</td><td>Similar speed to CoreML EP at about half the memory (419 MB against 786 MB); FP16 adds nothing here</td></tr>
+              <tr><td>Laptop-class CPU</td><td>Not viable at FP32, 640×640</td><td>Below 30 FPS in every session measured</td></tr>
+              <tr><td>INT8 on the T4</td><td>Only if an 18.4 percent relative mAP loss is acceptable</td><td>About 6 percent faster than FP16 at mean</td></tr>
+            </tbody>
+          </table>
+        </div>
+
+      <p>Every number in the results table is real. Getting there took four separate readings elsewhere in this study, in the accuracy pipeline, the thermal logs, the live demo and a power profiler. None of them appear above, and each needed a second look before it could be trusted.</p>
     </div>
 
     <h2>The Plausible Number</h2>
 
-    <p>That first-run 0.263 wasn't a glitch. It was wrong by 27 percent, the fix brought it to 0.359, but nothing about the number itself said so. It sat in a plausible range for a nano-class detector: not zero, not NaN, nothing a smoke test would catch.</p>
+    <p>That first-run 0.263 wasn't a glitch. It was wrong by 27 percent (the fix brought it to 0.359) but nothing about the number itself said so. It sat in a plausible range for a nano-class detector: not zero, not NaN, nothing a smoke test would catch.</p>
 
     <p>The cause was one threshold applied in the wrong place. Detections were filtered to the deployment confidence cutoff (0.5) before being handed to the evaluator, the same cutoff used to decide when a box gets drawn on screen. The evaluator needs the opposite: every detection down to a near-zero confidence, so it can build a full precision-recall curve and integrate under it. Filtering at 0.5 doesn't trim a few low-confidence guesses off the end of that curve. It discards the entire lower half before the evaluator ever sees it, and reports a mean average precision over what's left as though nothing were missing.</p>
 
@@ -442,35 +464,37 @@
 
     <h2>The Tax You Only Pay Live</h2>
 
-    <p>The webcam demo runs the exact combination already in the table above, that is ONNX Runtime with CoreML EP, FP32, on the Mac M5, which measured 9.34 ms mean in the isolated benchmark. Live, against a real camera feed, it measures 14.79 ms. Fifty-eight percent higher. Same model, same hardware, same weights.</p>
+    <p>The webcam demo runs a combination already in the table above: ONNX Runtime with CoreML EP, FP32, on the Mac M5. The isolated benchmark measured it at 9.34 ms mean. Live, against a real camera feed, it measures 14.79 ms. Fifty-eight percent higher. Same model, same hardware, same weights.</p>
 
     <div class="figure-block">
       <img src="apparatus-problem-chart.png" alt="Live inference-time chart and per-stage timing breakdown overlaid on the webcam demo feed" style="max-width:100%;">
       <p class="figure-caption">The live demo's own on-screen chart, tracking per-frame inference latency in real time against a fixed 10 ms reference line.</p>
     </div>
 
-    <p>The isolated benchmark is a tight loop: infer, infer, infer, no gap between calls. The live demo is not, there's a camera read, a decode, a draw, a display between every inference, roughly fifty milliseconds of idle time the CPU has no reason to stay at full clock for. So it doesn't. It downclocks during the gap and pays a real "cold start" tax ramping back up each time inference resumes, confirmed directly against CPU frequency counters, not inferred from the shape of a latency curve. A tight-loop benchmark never sees this gap. A live camera loop always has one.</p>
+    <p>The isolated benchmark is a tight loop: infer, infer, infer, no gap between calls. The live demo is not. Between every inference there's a camera read, a decode, a draw and a display, roughly fifty milliseconds of idle time the CPU has no reason to stay at full clock for. So it doesn't. It downclocks during the gap and pays a real "cold start" tax ramping back up each time inference resumes. A tight-loop benchmark never sees this gap. A live camera loop always has one.</p>
+
+    <p>That paragraph took more work to earn than anything else in the demo. The first explanation was that the camera was the bottleneck. Timing every stage across 1,200 live frames said otherwise: drawing to the screen took 39 percent of each frame, capture 31, inference 22. It also exposed the real puzzle, inference itself running 58 percent over its own benchmark. The easy explanations went next. Latency stayed flat from the first frame of the run to the last, so the machine wasn't heating up, and both paths call the same inference code. Then a clue with the wrong sign for contention: within a single frame, a shorter camera wait predicted a slower inference (r = −0.78). So the camera came out entirely, and an artificial idle gap went in before each call. At zero gap the benchmark figure came straight back. Past about 20 ms of gap, latency climbed toward double, and three separate runs drew the same curve. A curve only fits a hypothesis, so the CPU was read directly while the test ran: the performance cores' clock fell from 3,300 MHz to 2,863 to 2,355 as the gap grew from zero to 20 to 50 ms. Two independent parses of that log agreed on all 590 samples.</p>
 
     <p>Neither number is wrong. The isolated figure correctly measures sustained throughput. The live figure correctly measures single-call latency under a bursty access pattern. They simply aren't the same question, and if you sized a deployment SLA off the first one, you'd be wrong by more than half. The hardware never lied. It answered two different questions, and only one of them matches what a live deployment actually asks.</p>
 
     <h2>The Documented Exclusion</h2>
 
-    <p>Apple documents <em>CPUOnly</em> as an exclusion: request it, and CoreML is not supposed to touch the GPU or the Neural Engine. That makes it a convenient control, run a model under <em>CPUOnly</em>, compare against every other compute-unit setting, and if there's no difference, the Neural Engine probably wasn't doing anything in those either. But when that comparison ran, repeatedly, across seven rounds, it found no measurable latency difference between <em>CPUOnly</em>, <em>CPUAndGPU</em>, <em>CPUAndNeuralEngine</em>, and the default <em>ALL</em> — a real, reproducible null result. The conclusion drawn from it was that the Neural Engine wasn't meaningfully engaged.</p>
+    <p>Apple documents <em>CPUOnly</em> as an exclusion: request it, and CoreML is not supposed to touch the GPU or the Neural Engine. That makes it a convenient control. Run a model under <em>CPUOnly</em>, compare against every other compute-unit setting, and if there's no difference, the Neural Engine probably wasn't doing anything in those either. Across seven rounds, the comparison found no measurable latency difference between <em>CPUOnly</em>, <em>CPUAndGPU</em>, <em>CPUAndNeuralEngine</em> and the default <em>ALL</em>. That null result was built to be hard to dismiss. In the first four rounds the fastest setting changed every time, the signature of noise, and a formal test across the settings came back at p = 0.57. The study's own possible misconfiguration was ruled out next, across two model formats and explicit configuration hints. A plain CPU execution provider, run as a control each time, stayed about 4.4 times slower in every round, so CoreML was clearly doing real work; the only question was where. The conclusion drawn from all of it was that the Neural Engine wasn't meaningfully engaged.</p>
 
     <div class="correction">
       <strong>Direct measurement, not inference</strong>
-      A power profiler was pointed at six conditions, that is: idle, plain CPU execution, and all four compute-unit settings, while sampling Neural Engine power draw directly. The two genuinely CoreML-free conditions read a clean 0 mW floor. CPUOnly read 857 mW, inside the same 816–881 mW band as every other CoreML setting, nowhere near the floor. The exclusion the documentation describes does not hold for this hardware and this workload. The sustained draw points to likely real, if partial, Neural Engine engagement, but which specific operations, that's not established.
+      A power profiler was pointed at six conditions (idle, plain CPU execution, and all four compute-unit settings) sampling Neural Engine power draw directly. The two genuinely CoreML-free conditions read a clean 0 mW floor. CPUOnly read 857 mW, inside the same 816–881 mW band as every other CoreML setting, nowhere near the floor. The exclusion the documentation describes does not hold for this hardware and this workload. The sustained draw points to likely real, if partial, Neural Engine engagement, but which specific operations, that's not established.
     </div>
 
     <p>The latency-null result stands on its own: no compute-unit setting measurably changes speed. What doesn't survive is the argument built on top of it: CPUOnly forbidding Neural Engine access was never the same thing as CPUOnly achieving it. A vendor's own documented API contract needed independent verification before it could stand in as a control, and here, it failed the check. The guarantee was never tested until this study tested it directly, and it didn't hold.</p>
 
     <h2>What Was Actually Real</h2>
 
-    <p>Four sections of apparatus problems isn't the whole story. Some of what the benchmark measured held up completely, starting with the table itself. PyTorch MPS FP32 on the Mac M5 runs at 8.79 ms mean, within 1.5× of the T4 via TensorRT at 5.88 ms FP32. A laptop's on-chip accelerator landing within striking distance of a datacenter GPU, for this model class, is a real, independently-confirmed result. This is scoped narrowly, though: one nano-class model, batch size 1, on the specific exported graph this study measured, where 12 of 233 nodes always fall back to CPU regardless of settings. None of it generalizes past that scope without new measurement, and it's a comparison against exactly one NVIDIA GPU, not a claim about NVIDIA hardware generally.</p>
+    <p>Four sections of apparatus problems isn't the whole story. Some of what the benchmark measured held up completely, starting with the table itself. PyTorch MPS FP32 on the Mac M5 runs at 8.79 ms mean, within 1.5× of the T4 via TensorRT at FP32 (5.88 ms). Against the T4's best result, FP16 at 3.44 ms, the gap is about 2.6×. A laptop's on-chip accelerator landing within striking distance of a datacenter GPU, for this model class, is a real, independently-confirmed result. This is scoped narrowly, though: one nano-class model, batch size 1, on the specific exported graph this study measured, where 12 of 233 nodes always fall back to CPU regardless of settings. None of it generalizes past that scope without new measurement, and it's a comparison against exactly one NVIDIA GPU, not a claim about NVIDIA hardware generally.</p>
 
-    <p>On the T4, casting from FP32 to FP16 is close to free. Mean latency drops 41 percent, p95 drops 53 percent that is 5.88 ms down to 3.44 ms, and 7.93 ms down to 3.72 ms, and the accuracy delta, −0.0004 mAP, sits below the evaluator's own measurement noise. Every session this study ran, pre-fix and post-fix, agrees: on this T4, FP32 is a dominated option wherever Tensor Core FP16 execution is available.</p>
+    <p>On the T4, casting from FP32 to FP16 is close to free. Mean latency drops 41 percent (5.88 ms to 3.44 ms) and p95 drops 53 percent (7.93 ms to 3.72 ms), while the accuracy delta, −0.0004 mAP, sits below the evaluator's own measurement noise. Run-to-run spread tightens too, from 1.27 ms to 0.10 ms. Every session this study ran, pre-fix and post-fix, agrees: on this T4, FP32 is a dominated option wherever Tensor Core FP16 execution is available.</p>
 
-    <p>INT8 is a different story, and a more interesting one. Its p95 ordering relative to FP16 flipped direction across all three sessions (faster once, 17 percent slower once, faster again) with no two of those sessions sharing a software stack, so there's no single mechanism to blame for the flipping. What didn't move was the shape of the accuracy cost, even though its exact size did: −0.042 mAP before the letterbox fix described above, −0.0657 after it, smaller pre-fix, larger post-fix, but a large, non-noise-level penalty in every session regardless. NVIDIA's own TensorRT deployment guidance treats an accuracy cost above one percentage point as a reason to reconsider INT8. Even the smaller pre-fix figure clears that line by roughly 4×; the current figure clears it by 6.6×. The tradeoff INT8 is supposed to offer only has one side of it that's real.</p>
+    <p>INT8 is a different story. Its p95 ordering relative to FP16 flipped direction across all three sessions (faster once, 17 percent slower once, faster again), with no two of those sessions sharing a software stack, so there's no single mechanism to blame for the flipping. What didn't move was the scale of the accuracy cost, even though its exact size did: −0.042 mAP before the letterbox fix described above and −0.0657 after it, a large penalty well above noise in every session. Against that, INT8's speed advantage over FP16 is small: 3.22 ms against 3.44 ms at mean, about 6 percent, and 3.55 ms against 3.72 ms at p95, under 5 percent. The tradeoff is poor on both sides. It is also the verdict on one specific INT8 setup: TensorRT's entropy calibrator on 500 COCO val2017 images, with INT8 and FP16 both enabled so TensorRT chooses per layer, and no layer held at higher precision. A calibration setup that keeps sensitive layers in higher precision might land elsewhere. This study didn't test one.</p>
 
     <div class="rule-section">
       <div class="rule-item">
@@ -479,16 +503,16 @@
       </div>
       <div class="rule-item">
         <strong>Apple Silicon MPS, FP32 → FP16</strong>
-        Mean latency rises slightly, 8.79 ms to 9.56 ms. Accuracy cost: also none measurable. The speed benefit simply doesn't show up here.
+        Mean latency slightly worse (8.79 ms to 9.56 ms), p95 slightly better (11.21 ms to 10.75 ms). Accuracy cost: also none measurable. No speed benefit shows up here.
       </div>
     </div>
 
-    <p>Same cast, same near-zero accuracy cost, two different latency outcomes. FP16 execution on a T4 runs through dedicated Tensor Cores built for exactly this. Apple Silicon's Metal shader path doesn't appear to hit the same bottleneck at a model this small, the casting overhead may simply have nothing to offset, though this study didn't profile deep enough to confirm the mechanism, only the result. A precision decision validated on one accelerator is a decision about that accelerator. It is not, by default, a decision about the next one.</p>
+    <p>Same cast, same near-zero accuracy cost, two different latency outcomes. FP16 execution on a T4 runs through dedicated Tensor Cores built for exactly this. Apple Silicon's Metal shader path doesn't appear to hit the same bottleneck at a model this small; the casting overhead may simply have nothing to offset, though this study didn't profile deep enough to confirm the mechanism, only the result. A precision decision validated on one accelerator is a decision about that accelerator. It is not, by default, a decision about the next one.</p>
 
-    <p>That's what the apparatus survived long enough to actually say, and it adds up to a deployment framework rather than just a table. On the T4 via TensorRT, the answer is FP16: free speed, no accuracy cost, nothing left standing against it. CPU alone, in FP32 at this resolution, is ruled out regardless of runtime, the gap to the GPU path is too large for either CPU runtime to close by being clever about it; INT8 or a lower input resolution might close it, but neither was benchmarked here. INT8 is available, not free, the right call only if the target application can absorb an eighteen-percent relative hit to mAP, never a default. On Apple Silicon, the answer for now is PyTorch MPS at FP32: CoreML EP costs 786 MB of steady-state memory against MPS's 419 MB, for no confirmed Neural Engine benefit over MPS's own direct GPU path.</p>
+    <p>That's what the apparatus survived long enough to actually say, and it adds up to a deployment framework rather than just a table. On the T4 via TensorRT, the answer is FP16: free speed, no accuracy cost, nothing left standing against it. CPU alone, in FP32 at this resolution, is ruled out regardless of runtime. The gap to the GPU path is too large for either CPU runtime to close by being clever about it; INT8 or a lower input resolution might close it, but neither was benchmarked here. INT8 is available, not free, the right call only if the target application can absorb an eighteen-percent relative hit to mAP, never a default. On Apple Silicon, the answer for now is PyTorch MPS at FP32: CoreML EP costs 786 MB of steady-state memory against MPS's 419 MB, for no confirmed Neural Engine benefit over MPS's own direct GPU path.</p>
 
     <div class="terminal-question">
-      <p>Zero point two six three looked fine on a screen once. Nothing crashed, nothing flagged, nothing about its shape said wrong. What caught it and the other three, was never a sharper first look. It was going back with a different instrument each time: a second threshold, a thermal log, an idle gap, a power rail. Four kinds of lie, and none of them looked like one, plausibility, machine state, access pattern, a documentation contract. A benchmark number is not a fact about a model. It is a fact about everything standing between the model and the table it lands in.</p>
+      <p>Zero point two six three looked fine on a screen once. Nothing crashed, nothing flagged, nothing about its shape said wrong. What caught it, and the other three, was never a sharper first look. It was going back with a different instrument each time: a second threshold, a thermal log, an idle gap, a power rail. Four kinds of lie, and none of them looked like one, plausibility, machine state, access pattern, a documentation contract. A benchmark number is not a fact about a model. It is a fact about everything standing between the model and the table it lands in.</p>
     </div>
 
   </div>
