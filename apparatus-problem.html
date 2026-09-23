@@ -1,0 +1,503 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>The Apparatus Problem</title>
+<meta name="description" content="A benchmark number is not measured — it is manufactured, and four times during this study, a reading meant something other than what it first appeared to. A YOLOv8n object detector, three runtimes, three hardware targets, and the apparatus built to measure all of it.">
+<link rel="canonical" href="https://knakul242.github.io/apparatus-problem.html">
+<meta property="og:type" content="article">
+<meta property="og:title" content="The Apparatus Problem">
+<meta property="og:description" content="A benchmark number is not measured — it is manufactured, and four times during this study, a reading meant something other than what it first appeared to. A YOLOv8n object detector, three runtimes, three hardware targets, and the apparatus built to measure all of it.">
+<meta property="og:url" content="https://knakul242.github.io/apparatus-problem.html">
+<meta property="og:image" content="https://knakul242.github.io/og-image.png">
+<meta property="og:image:width" content="1254">
+<meta property="og:image:height" content="1254">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="The Apparatus Problem">
+<meta name="twitter:description" content="A benchmark number is not measured — it is manufactured, and four times during this study, a reading meant something other than what it first appeared to. A YOLOv8n object detector, three runtimes, three hardware targets, and the apparatus built to measure all of it.">
+<meta name="twitter:image" content="https://knakul242.github.io/og-image.png">
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "BlogPosting",
+  "headline": "The Apparatus Problem",
+  "description": "A benchmark number is not measured — it is manufactured, and four times during this study, a reading meant something other than what it first appeared to. A YOLOv8n object detector, three runtimes, three hardware targets, and the apparatus built to measure all of it.",
+  "datePublished": "2026-09-23",
+  "author": {
+    "@type": "Person",
+    "name": "Nakul Khandelwal",
+    "url": "https://knakul242.github.io/"
+  },
+  "url": "https://knakul242.github.io/apparatus-problem.html"
+}
+</script>
+<link rel="icon" type="image/png" href="https://knakul242.github.io/favicon.png">
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;0,900;1,400;1,700&family=IBM+Plex+Mono:wght@300;400;500&family=Libre+Baskerville:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --ink: #0e0e0e;
+    --paper: #f4f0e8;
+    --accent: #c8392b;
+    --mid: #6b6560;
+    --rule: #c8bfb0;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  html { font-size: 18px; }
+
+  body {
+    background: var(--paper);
+    color: var(--ink);
+    font-family: 'Libre Baskerville', Georgia, serif;
+    line-height: 1.75;
+    min-height: 100vh;
+  }
+
+  body::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.04'/%3E%3C/svg%3E");
+    pointer-events: none;
+    z-index: 100;
+    opacity: 0.4;
+  }
+
+  .main-container {
+    max-width: 780px;
+    margin: 0 auto;
+    padding: 0 2rem;
+  }
+
+  .hero {
+    padding: 4rem 0 2rem;
+    border-bottom: 1px solid var(--rule);
+    margin-bottom: 3rem;
+  }
+
+  h1 {
+    font-family: 'Playfair Display', serif;
+    font-size: clamp(2.6rem, 6vw, 4.2rem);
+    font-weight: 900;
+    line-height: 1.05;
+    letter-spacing: -0.02em;
+    margin-bottom: 1.5rem;
+    color: var(--ink);
+  }
+
+  h1 em {
+    font-style: italic;
+    color: var(--accent);
+  }
+
+  .deck {
+    font-family: 'Libre Baskerville', serif;
+    font-size: 1.15rem;
+    line-height: 1.65;
+    color: #3a3530;
+    font-style: italic;
+    max-width: 620px;
+    border-left: 3px solid var(--accent);
+    padding-left: 1.25rem;
+    margin-bottom: 2rem;
+  }
+
+  .article-body { display: grid; grid-template-columns: minmax(0, 1fr); gap: 0; }
+
+  h2 {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.5rem;
+    font-weight: 700;
+    margin: 3rem 0 1rem;
+    color: var(--ink);
+    line-height: 1.25;
+  }
+
+  h2::before {
+    content: '§';
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 0.7rem;
+    color: var(--accent);
+    display: block;
+    margin-bottom: 0.4rem;
+    letter-spacing: 0.1em;
+  }
+
+  h2.intro-head::before { content: '◆'; }
+
+  p {
+    margin-bottom: 1.4rem;
+    font-size: 1rem;
+    color: #1a1714;
+  }
+
+  .intro-section > p:first-of-type::first-letter {
+    font-family: 'Playfair Display', serif;
+    font-size: 4rem;
+    font-weight: 900;
+    float: left;
+    line-height: 0.8;
+    margin: 0.1em 0.1em 0 0;
+    color: var(--accent);
+  }
+
+  .article-body > p:first-of-type::first-letter { all: unset; }
+
+  .pullquote {
+    margin: 3rem -2rem;
+    padding: 2rem 2rem;
+    background: var(--ink);
+    color: var(--paper);
+    font-family: 'Playfair Display', serif;
+    font-size: 1.4rem;
+    font-style: italic;
+    line-height: 1.4;
+    position: relative;
+  }
+
+  .pullquote::before {
+    content: '\201C';
+    font-size: 6rem;
+    line-height: 0;
+    position: absolute;
+    top: 2.5rem;
+    left: 1.5rem;
+    color: var(--accent);
+    font-family: 'Playfair Display', serif;
+    opacity: 0.4;
+  }
+
+  .pullquote p { color: var(--paper); margin: 0; padding-left: 2rem; }
+  .pullquote p::first-letter { all: unset; }
+
+  .intro-section {
+    border-left: 3px solid var(--accent);
+    padding-left: 1.75rem;
+    margin-bottom: 3rem;
+    padding-bottom: 2rem;
+    border-bottom: 1px solid var(--rule);
+    min-width: 0;
+  }
+
+  .correction {
+    background: transparent;
+    border: 1px solid var(--rule);
+    border-left: 3px solid var(--mid);
+    padding: 1rem 1.25rem;
+    margin: 1.5rem 0;
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 0.72rem;
+    color: var(--mid);
+    line-height: 1.7;
+  }
+
+  .correction strong {
+    display: block;
+    font-size: 0.68rem;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--ink);
+    margin-bottom: 0.4rem;
+  }
+
+  .rule-section {
+    border-top: 3px double var(--rule);
+    border-bottom: 1px solid var(--rule);
+    padding: 1.5rem 0;
+    margin: 2rem 0;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 2rem;
+  }
+
+  .rule-item {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 0.72rem;
+    color: var(--mid);
+    line-height: 1.6;
+  }
+
+  .rule-item strong {
+    display: block;
+    color: var(--ink);
+    font-size: 0.8rem;
+    margin-bottom: 0.3rem;
+    letter-spacing: 0.05em;
+  }
+
+  /* Data table — new component for this piece */
+  .table-wrap {
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+    margin: 2rem 0;
+  }
+
+  .data-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 0.92rem;
+  }
+
+  .data-table caption {
+    text-align: left;
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 0.62rem;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--accent);
+    margin-bottom: 0.6rem;
+  }
+
+  .data-table th {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 0.6rem;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--mid);
+    text-align: left;
+    padding: 0.5rem 0.7rem;
+    border-bottom: 1px solid var(--ink);
+    white-space: nowrap;
+  }
+
+  .data-table th.num, .data-table td.num { text-align: right; }
+  .data-table th.ctr, .data-table td.ctr { text-align: center; }
+
+  .data-table td {
+    font-family: 'Libre Baskerville', serif;
+    padding: 0.55rem 0.7rem;
+    border-bottom: 1px solid var(--rule);
+    color: #1a1714;
+    white-space: nowrap;
+  }
+
+  .data-table td.num {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 0.82rem;
+  }
+
+  .data-table tbody tr:last-child td { border-bottom: 1px solid var(--ink); }
+
+  .figure-block { margin: 2.5rem 0; }
+  .figure-block img { display: block; width: 100%; max-width: 100%; border: 1px solid var(--rule); }
+  .figure-caption {
+    font-family: 'Libre Baskerville', serif;
+    font-style: italic;
+    font-size: 0.85rem;
+    color: var(--mid);
+    margin-top: 0.6rem;
+    line-height: 1.5;
+  }
+
+  .terminal-question {
+    margin: 4rem 0 2rem;
+    padding: 3rem 2.5rem;
+    border-top: 3px solid var(--ink);
+    border-bottom: 3px solid var(--ink);
+    text-align: center;
+  }
+
+  .terminal-question p {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.4rem;
+    font-style: italic;
+    line-height: 1.5;
+    color: var(--ink);
+    max-width: 580px;
+    margin: 0 auto;
+  }
+
+  .terminal-question p::first-letter { all: unset; }
+
+  footer {
+    margin-top: 4rem;
+    padding: 2rem 0 4rem;
+    border-top: 1px solid var(--rule);
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 0.65rem;
+    letter-spacing: 0.1em;
+    color: var(--mid);
+    line-height: 2;
+  }
+
+  footer strong {
+    display: block;
+    color: var(--ink);
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    margin-bottom: 0.5rem;
+  }
+
+  footer a {
+    color: var(--accent);
+    text-decoration: none;
+    border-bottom: 1px solid var(--accent);
+    letter-spacing: normal;
+  }
+
+  footer a:hover { opacity: 0.7; }
+
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(16px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  .hero, .intro-section, h2, .pullquote, .terminal-question {
+    animation: fadeUp 0.7s ease both;
+  }
+
+  @media (max-width: 600px) {
+    .rule-section { grid-template-columns: 1fr; }
+    h1 { font-size: 2.2rem; }
+    .intro-section { padding-left: 1rem; }
+    .data-table { font-size: 0.8rem; }
+    .terminal-question { padding: 2rem 1.25rem; }
+  }
+</style>
+</head>
+<body>
+
+<div class="main-container">
+
+  <header class="hero">
+    <h1>The <em>Apparatus</em> Problem</h1>
+    <p class="deck">A benchmark number is not measured, it is manufactured, by a preprocessing function, a confidence threshold, a thermal state, a vendor's compute-unit flag, and any one of those can make a reading mean something other than it appears to, without ever crashing. This is a study of an object detector across three runtimes and three hardware targets. It is also a study of four readings that needed a second look before they could be trusted.</p>
+  </header>
+
+  <div class="article-body">
+
+    <div class="intro-section">
+      <h2 class="intro-head">The Reading</h2>
+
+      <p>The first benchmark run finished, and the screen read 0.263 mean average precision. Nothing crashed. Nothing looked wrong. A YOLOv8n object detector, exported once to ONNX, had just returned a plausible number for a nano-class model, in range, unremarkable, exactly the kind of figure that gets written into a table without a second look. It didn't survive a second look. Neither did three other readings that turned up later, on different hardware, for different reasons.</p>
+
+      <p>Three runtimes, three hardware targets, three precision levels across PyTorch, ONNX Runtime, and TensorRT, on a Fedora CPU, a Colab T4, and an Apple M5. The setup is ordinary. What made the project interesting was the apparatus built to measure it.</p>
+
+      <p>Before any of what follows was trusted, the export step itself was checked: PyTorch and ONNX Runtime run on the identical input, their outputs compared anchor by anchor. Agreement held to seven significant figures across 42 million evaluated anchor outputs, this was the widest, most demanding check this study ran, and the only one performed before a single benchmark number existed. The model was never in question. Everything below is about what happened to its numbers on the way to the page.</p>
+
+      <p>The protocol behind every row that follows: 100 timed inference passes after 10 discarded warmup passes, batch size 1, mean and p95 latency; accuracy measured as mAP@0.5:0.95 across the full 5,000-image COCO val2017 set.</p>
+
+      <p>Here is what the pipeline eventually measured, once 0.263 and three other readings had been run back down to what they actually meant.</p>
+
+      <div class="table-wrap">
+        <table class="data-table">
+          <caption>Latency and accuracy — all eight runtime × hardware × precision combinations</caption>
+          <thead>
+            <tr>
+              <th>Runtime</th><th>Hardware</th><th>Precision</th>
+              <th class="num">Mean</th><th class="num">p95</th><th class="num">FPS</th>
+              <th class="num">mAP@.5:.95</th><th class="num">Δ vs FP32</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr><td>PyTorch CPU</td><td>Fedora CPU</td><td>FP32</td><td class="num">77.5 ms</td><td class="num">95.4 ms</td><td class="num">10.5</td><td class="num">0.3595</td><td class="num">baseline</td></tr>
+            <tr><td>ONNX Runtime CPU EP</td><td>Fedora CPU</td><td>FP32</td><td class="num">72.1 ms</td><td class="num">81.4 ms</td><td class="num">12.3</td><td class="num">0.3595</td><td class="num">baseline</td></tr>
+            <tr><td>TensorRT</td><td>Colab T4</td><td>FP32</td><td class="num">5.88 ms</td><td class="num">7.93 ms</td><td class="num">126</td><td class="num">0.3576</td><td class="num">baseline</td></tr>
+            <tr><td>TensorRT</td><td>Colab T4</td><td>FP16</td><td class="num">3.44 ms</td><td class="num">3.72 ms</td><td class="num">269</td><td class="num">0.3571</td><td class="num">−0.0004</td></tr>
+            <tr><td>TensorRT</td><td>Colab T4</td><td>INT8</td><td class="num">3.22 ms</td><td class="num">3.55 ms</td><td class="num">281</td><td class="num">0.2919</td><td class="num">−0.0657</td></tr>
+            <tr><td>PyTorch MPS</td><td>Mac M5</td><td>FP32</td><td class="num">8.79 ms</td><td class="num">11.21 ms</td><td class="num">89</td><td class="num">0.3576</td><td class="num">baseline</td></tr>
+            <tr><td>PyTorch MPS</td><td>Mac M5</td><td>FP16</td><td class="num">9.56 ms</td><td class="num">10.75 ms</td><td class="num">93</td><td class="num">0.3577</td><td class="num">+0.0001</td></tr>
+            <tr><td>ONNX Runtime + CoreML EP</td><td>Mac M5</td><td>FP32</td><td class="num">9.34 ms</td><td class="num">9.93 ms</td><td class="num">101</td><td class="num">0.3576</td><td class="num">baseline</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <p>One more piece of apparatus needed fixing before any of this was trustworthy, and it's worth stating plainly since six of the eight rows above depend on it. The preprocessing step that resizes every image before inference had no upper clamp on its scale factor, which means it would enlarge a small image to fit the model's input size, something the reference validator this study is measured against explicitly refuses to do. Roughly one in five COCO val2017 images is smaller than 640 pixels in both dimensions, so this wasn't an edge case. Clamping the scale factor moved FP32 and FP16 mAP by about two-thousandths of a point on both the Mac and the T4, independently, which itself is a form of corroboration: two different runtimes, two different machines, the same fix, the same-sized shift. INT8 moved roughly thirteen times further, plausibly because its calibration set runs through the same preprocessing function, so fixing the measuring instrument also changed the thing being measured (a plausible mechanism, not a confirmed one). The Fedora rows above predate this fix. That hardware is gone, so they can't be re-measured, and aren't directly comparable to the rest of the table for that reason.</p>
+
+      <div class="table-wrap">
+        <table class="data-table">
+          <caption>Runtime and hardware scope</caption>
+          <thead>
+            <tr><th>Runtime</th><th>Hardware</th><th class="ctr">FP32</th><th class="ctr">FP16</th><th class="ctr">INT8</th></tr>
+          </thead>
+          <tbody>
+            <tr><td>PyTorch CPU</td><td>Core Ultra 5 125H</td><td class="ctr">✓</td><td class="ctr">—</td><td class="ctr">—</td></tr>
+            <tr><td>ONNX Runtime CPU EP</td><td>Core Ultra 5 125H</td><td class="ctr">✓</td><td class="ctr">—</td><td class="ctr">—</td></tr>
+            <tr><td>TensorRT</td><td>Tesla T4</td><td class="ctr">✓</td><td class="ctr">✓</td><td class="ctr">✓</td></tr>
+            <tr><td>PyTorch MPS</td><td>Apple M5</td><td class="ctr">✓</td><td class="ctr">✓</td><td class="ctr">—</td></tr>
+            <tr><td>ONNX Runtime + CoreML EP</td><td>Apple M5</td><td class="ctr">✓</td><td class="ctr">—</td><td class="ctr">—</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <p>The first honest reading of that table has nothing to do with precision. Fastest and slowest sit roughly twenty-seven times apart at the tail: a Fedora CPU core at 95 ms p95, the fastest Colab T4 result at 3.55 ms p95, and neither CPU runtime clears real time at any thermal state this study measured. At this resolution, hardware acceleration is the entry ticket, not a tuning knob. Every row that isn't a CPU exists because the hardware changed, not because the software got cleverer.</p>
+
+      <p>Every number in that table is real. Getting there took four separate readings elsewhere in this study, in the accuracy pipeline, the thermal logs, the live demo, and a power profiler — none of them shown above, each needing a second look before it could be trusted.</p>
+    </div>
+
+    <h2>The Plausible Number</h2>
+
+    <p>That first-run 0.263 wasn't a glitch. It was wrong by 27 percent, the fix brought it to 0.359, but nothing about the number itself said so. It sat in a plausible range for a nano-class detector: not zero, not NaN, nothing a smoke test would catch.</p>
+
+    <p>The cause was one threshold applied in the wrong place. Detections were filtered to the deployment confidence cutoff (0.5) before being handed to the evaluator, the same cutoff used to decide when a box gets drawn on screen. The evaluator needs the opposite: every detection down to a near-zero confidence, so it can build a full precision-recall curve and integrate under it. Filtering at 0.5 doesn't trim a few low-confidence guesses off the end of that curve. It discards the entire lower half before the evaluator ever sees it, and reports a mean average precision over what's left as though nothing were missing.</p>
+
+    <p>A silent default was the real problem: the function formatting predictions for evaluation had quietly inherited the deployment threshold whenever no evaluation threshold was passed in, so the wrong number could resurface from any future call without anyone choosing it. The fix added an explicit evaluation threshold, separate from the deployment one, and forced every caller to state which it meant. The biggest blindspot was that nothing about the number's shape gave the error away.</p>
+
+    <h2>The Thermal Envelope</h2>
+
+    <p>The first comparison between ONNX Runtime and PyTorch on the same Fedora CPU looked decisive: ONNX Runtime at 42.7 ms, PyTorch at 87.7 ms, a clean 2.05× advantage worth writing up. It wasn't. PyTorch had run into a sustained thermal throttle, while ONNX Runtime ran into a brief cooling window between tests. Measured again under matched thermal conditions, the real advantage is 7 to 14 percent, a genuine runtime optimization, not the win the first number implied.</p>
+
+    <p>The same disease turned up again on its own. PyTorch CPU's mean latency across three separate sessions on identical hardware and identical code: 51 ms, 77.5 ms, 88 ms. ONNX Runtime CPU EP: 43 to 72 ms across the same three sessions. No code changed between them. What changed was thermal state (cold-start turbo boost, partial throttle from prior load, sustained throttle under a long run) and each session landed in a different one. A single-session CPU number, reported without that context, measures whatever the chip happened to be doing that hour and not the runtime. In both cases, one number was standing in for a machine that was never in just one state to begin with.</p>
+
+    <h2>The Tax You Only Pay Live</h2>
+
+    <p>The webcam demo runs the exact combination already in the table above, that is ONNX Runtime with CoreML EP, FP32, on the Mac M5, which measured 9.34 ms mean in the isolated benchmark. Live, against a real camera feed, it measures 14.79 ms. Fifty-eight percent higher. Same model, same hardware, same weights.</p>
+
+    <div class="figure-block">
+      <img src="apparatus-problem-chart.png" alt="Live inference-time chart and per-stage timing breakdown overlaid on the webcam demo feed" style="max-width:100%;">
+      <p class="figure-caption">The live demo's own on-screen chart, tracking per-frame inference latency in real time against a fixed 10 ms reference line.</p>
+    </div>
+
+    <p>The isolated benchmark is a tight loop: infer, infer, infer, no gap between calls. The live demo is not, there's a camera read, a decode, a draw, a display between every inference, roughly fifty milliseconds of idle time the CPU has no reason to stay at full clock for. So it doesn't. It downclocks during the gap and pays a real "cold start" tax ramping back up each time inference resumes, confirmed directly against CPU frequency counters, not inferred from the shape of a latency curve. A tight-loop benchmark never sees this gap. A live camera loop always has one.</p>
+
+    <p>Neither number is wrong. The isolated figure correctly measures sustained throughput. The live figure correctly measures single-call latency under a bursty access pattern. They simply aren't the same question, and if you sized a deployment SLA off the first one, you'd be wrong by more than half. The hardware never lied. It answered two different questions, and only one of them matches what a live deployment actually asks.</p>
+
+    <h2>The Documented Exclusion</h2>
+
+    <p>Apple documents <em>CPUOnly</em> as an exclusion: request it, and CoreML is not supposed to touch the GPU or the Neural Engine. That makes it a convenient control, run a model under <em>CPUOnly</em>, compare against every other compute-unit setting, and if there's no difference, the Neural Engine probably wasn't doing anything in those either. But when that comparison ran, repeatedly, across seven rounds, it found no measurable latency difference between <em>CPUOnly</em>, <em>CPUAndGPU</em>, <em>CPUAndNeuralEngine</em>, and the default <em>ALL</em> — a real, reproducible null result. The conclusion drawn from it was that the Neural Engine wasn't meaningfully engaged.</p>
+
+    <div class="correction">
+      <strong>Direct measurement, not inference</strong>
+      A power profiler was pointed at six conditions, that is: idle, plain CPU execution, and all four compute-unit settings, while sampling Neural Engine power draw directly. The two genuinely CoreML-free conditions read a clean 0 mW floor. CPUOnly read 857 mW, inside the same 816–881 mW band as every other CoreML setting, nowhere near the floor. The exclusion the documentation describes does not hold for this hardware and this workload. The sustained draw points to likely real, if partial, Neural Engine engagement, but which specific operations, that's not established.
+    </div>
+
+    <p>The latency-null result stands on its own: no compute-unit setting measurably changes speed. What doesn't survive is the argument built on top of it: CPUOnly forbidding Neural Engine access was never the same thing as CPUOnly achieving it. A vendor's own documented API contract needed independent verification before it could stand in as a control, and here, it failed the check. The guarantee was never tested until this study tested it directly, and it didn't hold.</p>
+
+    <h2>What Was Actually Real</h2>
+
+    <p>Four sections of apparatus problems isn't the whole story. Some of what the benchmark measured held up completely, starting with the table itself. PyTorch MPS FP32 on the Mac M5 runs at 8.79 ms mean, within 1.5× of the T4 via TensorRT at 5.88 ms FP32. A laptop's on-chip accelerator landing within striking distance of a datacenter GPU, for this model class, is a real, independently-confirmed result. This is scoped narrowly, though: one nano-class model, batch size 1, on the specific exported graph this study measured, where 12 of 233 nodes always fall back to CPU regardless of settings. None of it generalizes past that scope without new measurement, and it's a comparison against exactly one NVIDIA GPU, not a claim about NVIDIA hardware generally.</p>
+
+    <p>On the T4, casting from FP32 to FP16 is close to free. Mean latency drops 41 percent, p95 drops 53 percent that is 5.88 ms down to 3.44 ms, and 7.93 ms down to 3.72 ms, and the accuracy delta, −0.0004 mAP, sits below the evaluator's own measurement noise. Every session this study ran, pre-fix and post-fix, agrees: on this T4, FP32 is a dominated option wherever Tensor Core FP16 execution is available.</p>
+
+    <p>INT8 is a different story, and a more interesting one. Its p95 ordering relative to FP16 flipped direction across all three sessions (faster once, 17 percent slower once, faster again) with no two of those sessions sharing a software stack, so there's no single mechanism to blame for the flipping. What didn't move was the shape of the accuracy cost, even though its exact size did: −0.042 mAP before the letterbox fix described above, −0.0657 after it, smaller pre-fix, larger post-fix, but a large, non-noise-level penalty in every session regardless. NVIDIA's own TensorRT deployment guidance treats an accuracy cost above one percentage point as a reason to reconsider INT8. Even the smaller pre-fix figure clears that line by roughly 4×; the current figure clears it by 6.6×. The tradeoff INT8 is supposed to offer only has one side of it that's real.</p>
+
+    <div class="rule-section">
+      <div class="rule-item">
+        <strong>TensorRT, FP32 → FP16</strong>
+        Mean latency drops 41%, p95 drops 53%. Accuracy cost: none measurable. A precision cast that pays for itself on every axis.
+      </div>
+      <div class="rule-item">
+        <strong>Apple Silicon MPS, FP32 → FP16</strong>
+        Mean latency rises slightly, 8.79 ms to 9.56 ms. Accuracy cost: also none measurable. The speed benefit simply doesn't show up here.
+      </div>
+    </div>
+
+    <p>Same cast, same near-zero accuracy cost, two different latency outcomes. FP16 execution on a T4 runs through dedicated Tensor Cores built for exactly this. Apple Silicon's Metal shader path doesn't appear to hit the same bottleneck at a model this small, the casting overhead may simply have nothing to offset, though this study didn't profile deep enough to confirm the mechanism, only the result. A precision decision validated on one accelerator is a decision about that accelerator. It is not, by default, a decision about the next one.</p>
+
+    <p>That's what the apparatus survived long enough to actually say, and it adds up to a deployment framework rather than just a table. On the T4 via TensorRT, the answer is FP16: free speed, no accuracy cost, nothing left standing against it. CPU alone, in FP32 at this resolution, is ruled out regardless of runtime, the gap to the GPU path is too large for either CPU runtime to close by being clever about it; INT8 or a lower input resolution might close it, but neither was benchmarked here. INT8 is available, not free, the right call only if the target application can absorb an eighteen-percent relative hit to mAP, never a default. On Apple Silicon, the answer for now is PyTorch MPS at FP32: CoreML EP costs 786 MB of steady-state memory against MPS's 419 MB, for no confirmed Neural Engine benefit over MPS's own direct GPU path.</p>
+
+    <div class="terminal-question">
+      <p>Zero point two six three looked fine on a screen once. Nothing crashed, nothing flagged, nothing about its shape said wrong. What caught it and the other three, was never a sharper first look. It was going back with a different instrument each time: a second threshold, a thermal log, an idle gap, a power rail. Four kinds of lie, and none of them looked like one, plausibility, machine state, access pattern, a documentation contract. A benchmark number is not a fact about a model. It is a fact about everything standing between the model and the table it lands in.</p>
+    </div>
+
+  </div>
+
+  <footer>
+    <strong>Source</strong>
+    Every number above is pulled directly from this project's own results and findings documentation: <a href="https://github.com/KNakul242/edge-inference-benchmark">github.com/KNakul242/edge-inference-benchmark</a>
+  </footer>
+
+</div>
+</body>
+</html>

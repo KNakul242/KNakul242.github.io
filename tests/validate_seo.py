@@ -15,6 +15,7 @@ ARTICLE_DATES = {
     "hollow-market.html": "2026-03-22",
     "thinking-frameworks.html": "2026-04-03",
     "counting-argument.html": "2026-04-13",
+    "apparatus-problem.html": "2026-09-23",
 }
 
 
