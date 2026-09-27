@@ -375,7 +375,7 @@
 
       <p>Three runtimes, three hardware targets, three precision levels across PyTorch, ONNX Runtime, and TensorRT, on a Fedora CPU, a Colab T4, and an Apple M5. The setup is ordinary. What made the project interesting was the apparatus built to measure it.</p>
 
-      <p>Before any of what follows was trusted, the export step itself was checked: PyTorch and ONNX Runtime run on the identical input, their outputs compared anchor by anchor. Agreement held to seven significant figures across 42 million evaluated anchor outputs, this was the widest, most demanding check this study ran, and the only one performed before a single benchmark number existed. The model was never in question. Everything below is about what happened to its numbers on the way to the page.</p>
+      <p>Before any of what follows was trusted, the export step itself was checked: PyTorch and ONNX Runtime were run on identical input and their raw outputs compared element by element, with the largest deviation on the export test input just under 10⁻³. The stronger confirmation came once accuracy could be measured: across 42 million evaluated anchor outputs, the two runtimes' mAP agreed to seven decimal places. The model was never in question. Everything below is about what happened to its numbers on the way to the page.</p>
 
       <p>The protocol behind every row that follows: 100 timed inference passes after 10 discarded warmup passes, batch size 1, mean and p95 latency; accuracy measured as mAP@0.5:0.95 across the full 5,000-image COCO val2017 set.</p>
 
@@ -486,7 +486,7 @@
       A power profiler was pointed at six conditions (idle, plain CPU execution, and all four compute-unit settings) sampling Neural Engine power draw directly. The two genuinely CoreML-free conditions read a clean 0 mW floor. CPUOnly read 857 mW, inside the same 816–881 mW band as every other CoreML setting, nowhere near the floor. The exclusion the documentation describes does not hold for this hardware and this workload. The sustained draw points to likely real, if partial, Neural Engine engagement, but which specific operations, that's not established.
     </div>
 
-    <p>The latency-null result stands on its own: no compute-unit setting measurably changes speed. What doesn't survive is the argument built on top of it: CPUOnly forbidding Neural Engine access was never the same thing as CPUOnly achieving it. A vendor's own documented API contract needed independent verification before it could stand in as a control, and here, it failed the check. The guarantee was never tested until this study tested it directly, and it didn't hold.</p>
+    <p>The latency-null result stands on its own: no compute-unit setting measurably changes speed. What doesn't survive is the argument built on top of it: CPUOnly forbidding Neural Engine access was never the same thing as CPUOnly achieving it. Because no setting ever removed the Neural Engine, equal latency across them can't show whether its work makes inference any faster; that question stays open. A vendor's own documented API contract needed independent verification before it could stand in as a control, and here, it failed the check. The guarantee was never tested until this study tested it directly, and it didn't hold.</p>
 
     <h2>What Was Actually Real</h2>
 
