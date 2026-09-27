@@ -4,25 +4,25 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>The Apparatus Problem</title>
-<meta name="description" content="A benchmark number is not measured — it is manufactured, and four times during this study, a reading meant something other than what it first appeared to. A YOLOv8n object detector, three runtimes, three hardware targets, and the apparatus built to measure all of it.">
+<meta name="description" content="A benchmark number is not measured. It is manufactured, and four times during this study, a reading meant something other than what it first appeared to. A YOLOv8n object detector, three runtimes, three hardware targets, and the apparatus built to measure all of it.">
 <link rel="canonical" href="https://knakul242.github.io/apparatus-problem.html">
 <meta property="og:type" content="article">
 <meta property="og:title" content="The Apparatus Problem">
-<meta property="og:description" content="A benchmark number is not measured — it is manufactured, and four times during this study, a reading meant something other than what it first appeared to. A YOLOv8n object detector, three runtimes, three hardware targets, and the apparatus built to measure all of it.">
+<meta property="og:description" content="A benchmark number is not measured. It is manufactured, and four times during this study, a reading meant something other than what it first appeared to. A YOLOv8n object detector, three runtimes, three hardware targets, and the apparatus built to measure all of it.">
 <meta property="og:url" content="https://knakul242.github.io/apparatus-problem.html">
 <meta property="og:image" content="https://knakul242.github.io/og-image.png">
 <meta property="og:image:width" content="1254">
 <meta property="og:image:height" content="1254">
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:title" content="The Apparatus Problem">
-<meta name="twitter:description" content="A benchmark number is not measured — it is manufactured, and four times during this study, a reading meant something other than what it first appeared to. A YOLOv8n object detector, three runtimes, three hardware targets, and the apparatus built to measure all of it.">
+<meta name="twitter:description" content="A benchmark number is not measured. It is manufactured, and four times during this study, a reading meant something other than what it first appeared to. A YOLOv8n object detector, three runtimes, three hardware targets, and the apparatus built to measure all of it.">
 <meta name="twitter:image" content="https://knakul242.github.io/og-image.png">
 <script type="application/ld+json">
 {
   "@context": "https://schema.org",
   "@type": "BlogPosting",
   "headline": "The Apparatus Problem",
-  "description": "A benchmark number is not measured — it is manufactured, and four times during this study, a reading meant something other than what it first appeared to. A YOLOv8n object detector, three runtimes, three hardware targets, and the apparatus built to measure all of it.",
+  "description": "A benchmark number is not measured. It is manufactured, and four times during this study, a reading meant something other than what it first appeared to. A YOLOv8n object detector, three runtimes, three hardware targets, and the apparatus built to measure all of it.",
   "datePublished": "2026-09-23",
   "author": {
     "@type": "Person",
@@ -363,7 +363,7 @@
 
   <header class="hero">
     <h1>The <em>Apparatus</em> Problem</h1>
-    <p class="deck">A benchmark number is not measured. It is manufactured, by a preprocessing function, a confidence threshold, a thermal state, a vendor's compute-unit flag, and any one of those can make a reading mean something other than it appears to, without ever crashing. This is a study of an object detector across three runtimes and three hardware targets. It is also a study of four readings that needed a second look before they could be trusted.</p>
+    <p class="deck">A benchmark number is not measured. It is manufactured by a preprocessing function, a confidence threshold, a thermal state, a vendor's compute-unit flag, and any one of those can make a reading mean something other than it appears to, without ever crashing. This is a study of an object detector across three runtimes and three hardware targets. It is also a study of four readings that needed a second look before they could be trusted.</p>
   </header>
 
   <div class="article-body">
@@ -424,9 +424,9 @@
         </table>
       </div>
 
-      <p class="figure-caption">A dash means the combination wasn't measured. ONNX Runtime at FP16 and INT8 needs a static-quantization step that wasn't implemented in this study; the CPU runtimes were measured at FP32 only, and PyTorch MPS at FP32 and FP16.</p>
+      <p class="figure-caption">A dash means the combination wasn't measured. ONNX Runtime at FP16 needs a float16 graph conversion, and at INT8 a static-quantization step; neither was implemented in this study. The CPU runtimes were measured at FP32 only, and PyTorch MPS at FP32 and FP16.</p>
 
-      <p>The first honest reading of that table has nothing to do with precision. Fastest and slowest sit roughly twenty-seven times apart at the tail: a Fedora CPU core at 95 ms p95, the fastest Colab T4 result at 3.55 ms p95, and neither CPU runtime reaches 30 FPS, the real-time bar used throughout this study, at any thermal state it measured. Even the coolest sessions averaged about 20 FPS for PyTorch and 23 for ONNX Runtime. At this resolution, hardware acceleration is the entry ticket, not a tuning knob. Every row that isn't a CPU exists because the hardware changed, not because the software got cleverer.</p>
+      <p>The first honest reading of that table has nothing to do with precision. Fastest and slowest sit roughly twenty-seven times apart at the tail: a Fedora CPU core at 95 ms p95, the fastest Colab T4 result at 3.55 ms p95, and neither CPU runtime reaches 30 FPS, the real-time bar used throughout this study, at any thermal state it measured. Even the coolest sessions managed only about 19 FPS for PyTorch and 21 for ONNX Runtime at p95. At this resolution, hardware acceleration is the entry ticket, not a tuning knob. Every row that isn't a CPU exists because the hardware changed, not because the software got cleverer.</p>
 
       <p>Read as deployment choices, the tables settle into four verdicts. The sections that follow are the evidence for each.</p>
 
@@ -479,7 +479,7 @@
 
     <h2>The Documented Exclusion</h2>
 
-    <p>Apple documents <em>CPUOnly</em> as an exclusion: request it, and CoreML is not supposed to touch the GPU or the Neural Engine. That makes it a convenient control. Run a model under <em>CPUOnly</em>, compare against every other compute-unit setting, and if there's no difference, the Neural Engine probably wasn't doing anything in those either. Across seven rounds, the comparison found no measurable latency difference between <em>CPUOnly</em>, <em>CPUAndGPU</em>, <em>CPUAndNeuralEngine</em> and the default <em>ALL</em>. That null result was built to be hard to dismiss. In the first four rounds the fastest setting changed every time, the signature of noise, and a formal test across the settings came back at p = 0.57. The study's own possible misconfiguration was ruled out next, across two model formats and explicit configuration hints. A plain CPU execution provider, run as a control each time, stayed about 4.4 times slower in every round, so CoreML was clearly doing real work; the only question was where. The conclusion drawn from all of it was that the Neural Engine wasn't meaningfully engaged.</p>
+    <p>Apple documents <em>CPUOnly</em> as an exclusion: request it, and CoreML is not supposed to touch the GPU or the Neural Engine. That makes it a convenient control. Run a model under <em>CPUOnly</em>, compare against every other compute-unit setting, and if there's no difference, the Neural Engine probably wasn't doing anything in those either. Across seven rounds, the comparison found no measurable latency difference between <em>CPUOnly</em>, <em>CPUAndGPU</em>, <em>CPUAndNeuralEngine</em> and the default <em>ALL</em>. That null result was built to be hard to dismiss. In the first four rounds the fastest setting changed every time, the signature of noise, and a formal test across the settings (Kruskal-Wallis) came back at p = 0.57. The study's own possible misconfiguration was ruled out next, across two model formats and explicit configuration hints. A plain CPU execution provider, run as a control each time, stayed about 4.4 times slower in every round, so CoreML was clearly doing real work; the only question was where. The conclusion drawn from all of it was that the Neural Engine wasn't meaningfully engaged.</p>
 
     <div class="correction">
       <strong>Direct measurement, not inference</strong>
@@ -492,7 +492,7 @@
 
     <p>Four sections of apparatus problems isn't the whole story. Some of what the benchmark measured held up completely, starting with the table itself. PyTorch MPS FP32 on the Mac M5 runs at 8.79 ms mean, within 1.5× of the T4 via TensorRT at FP32 (5.88 ms). Against the T4's best result, FP16 at 3.44 ms, the gap is about 2.6×. A laptop's on-chip accelerator landing within striking distance of a datacenter GPU, for this model class, is a real, independently-confirmed result. This is scoped narrowly, though: one nano-class model, batch size 1, on the specific exported graph this study measured, where 12 of 233 nodes always fall back to CPU regardless of settings. None of it generalizes past that scope without new measurement, and it's a comparison against exactly one NVIDIA GPU, not a claim about NVIDIA hardware generally.</p>
 
-    <p>On the T4, casting from FP32 to FP16 is close to free. Mean latency drops 41 percent (5.88 ms to 3.44 ms) and p95 drops 53 percent (7.93 ms to 3.72 ms), while the accuracy delta, −0.0004 mAP, sits below the evaluator's own measurement noise. Run-to-run spread tightens too, from 1.27 ms to 0.10 ms. Every session this study ran, pre-fix and post-fix, agrees: on this T4, FP32 is a dominated option wherever Tensor Core FP16 execution is available.</p>
+    <p>On the T4, casting from FP32 to FP16 is close to free. Mean latency drops 41 percent (5.88 ms to 3.44 ms) and p95 drops 53 percent (7.93 ms to 3.72 ms), while the accuracy delta, −0.0004 mAP, is about 0.1 percent, negligible, and changed sign between sessions. Run-to-run spread tightens too, from 1.27 ms to 0.10 ms. Every session this study ran, pre-fix and post-fix, agrees: on this T4, FP32 is a dominated option wherever Tensor Core FP16 execution is available.</p>
 
     <p>INT8 is a different story. Its p95 ordering relative to FP16 flipped direction across all three sessions (faster once, 17 percent slower once, faster again), with no two of those sessions sharing a software stack, so there's no single mechanism to blame for the flipping. What didn't move was the scale of the accuracy cost, even though its exact size did: −0.042 mAP before the letterbox fix described above and −0.0657 after it, a large penalty well above noise in every session. Against that, INT8's speed advantage over FP16 is small: 3.22 ms against 3.44 ms at mean, about 6 percent, and 3.55 ms against 3.72 ms at p95, under 5 percent. The tradeoff is poor on both sides. It is also the verdict on one specific INT8 setup: TensorRT's entropy calibrator on 500 COCO val2017 images, with INT8 and FP16 both enabled so TensorRT chooses per layer, and no layer held at higher precision. A calibration setup that keeps sensitive layers in higher precision might land elsewhere. This study didn't test one.</p>
 
