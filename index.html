@@ -192,6 +192,40 @@
     color: var(--accent);
   }
  
+  /* Entry with a second link (repo icon): an <a> can't nest inside the
+     article <a>, so the title link stretches over the whole card instead. */
+  .has-repo { position: relative; }
+
+  .article-main {
+    color: inherit;
+    text-decoration: none;
+  }
+
+  .article-main::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+  }
+
+  .repo-link {
+    position: relative;
+    z-index: 1;
+    display: inline-block;
+    vertical-align: middle;
+    margin-left: 0.2em;
+    color: var(--mid);
+    transition: color 0.2s ease;
+  }
+
+  .repo-link:hover,
+  .repo-link:focus-visible { color: var(--accent); }
+
+  .repo-link svg {
+    display: block;
+    width: 0.75em;
+    height: 0.75em;
+  }
+
   .article-meta {
     font-family: 'IBM Plex Mono', monospace;
     font-size: 0.65rem;
@@ -334,14 +368,14 @@
     <ul class="article-list">
  
       <li>
-        <a class="article-link" href="apparatus-problem.html">
+        <div class="article-link has-repo">
           <div class="article-meta">Machine Learning · Systems Engineering</div>
           <div class="article-title">
-            The Apparatus Problem
+            <span><a class="article-main" href="apparatus-problem.html">The Apparatus Problem</a> <a class="repo-link" href="https://github.com/KNakul242/edge-inference-benchmark" aria-label="View the edge-inference-benchmark repository on GitHub" title="GitHub repository"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"/><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"/></svg></a></span>
             <span class="article-arrow">→</span>
           </div>
           <p class="article-desc">A benchmark number is not measured, it is manufactured, and four times during this study, a reading meant something other than what it first appeared to. A YOLOv8n object detector, three runtimes, three hardware targets, and the apparatus built to measure all of it.</p>
-        </a>
+        </div>
       </li>
  
     </ul>

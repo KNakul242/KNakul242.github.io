@@ -91,6 +91,22 @@
     color: var(--accent);
   }
 
+  .repo-link {
+    display: inline-block;
+    vertical-align: middle;
+    color: var(--mid);
+    transition: color 0.2s ease;
+  }
+
+  .repo-link:hover,
+  .repo-link:focus-visible { color: var(--accent); }
+
+  .repo-link svg {
+    display: block;
+    width: 0.4em;
+    height: 0.4em;
+  }
+
   .deck {
     font-family: 'Libre Baskerville', serif;
     font-size: 1.15rem;
@@ -362,7 +378,7 @@
 <div class="main-container">
 
   <header class="hero">
-    <h1>The <em>Apparatus</em> Problem</h1>
+    <h1>The <em>Apparatus</em> Problem <a class="repo-link" href="https://github.com/KNakul242/edge-inference-benchmark" aria-label="View the edge-inference-benchmark repository on GitHub" title="GitHub repository"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"/><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"/></svg></a></h1>
     <p class="deck">A benchmark number is not measured. It is manufactured by a preprocessing function, a confidence threshold, a thermal state, a vendor's compute-unit flag, and any one of those can make a reading mean something other than it appears to, without ever crashing. This is a study of an object detector across three runtimes and three hardware targets. It is also a study of four readings that needed a second look before they could be trusted.</p>
   </header>
 
